@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canvas</title>
+    <style>
+        html,body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+    <script>
+        const canvas = document.getElementById('canvas');
+        const width = window.innerWidth;
+        const height = window.innerHeight;
+        let content = 
+        `
+        /* 绘制圆角矩形 */
+        function roundRect(ctx, x, y, width, height, radius, fillColor) {        
+            if (2 * radius > width || 2 * radius > height) { return width = height = 2 * radius; }
+            ctx.save();
+            ctx.translate(x, y);
+            ctx.beginPath(0);
+            ctx.arc(width - radius, height - radius, radius, 0, Math.PI / 2); 
+            ctx.lineTo(radius, height);
+            ctx.arc(radius, height - radius, radius, Math.PI / 2, Math.PI);
+            ctx.lineTo(0, radius);
+            ctx.arc(radius, radius, radius, Math.PI, Math.PI * 3 / 2);
+            ctx.lineTo(width - radius, 0);
+            ctx.arc(width - radius, radius, radius, Math.PI * 3 / 2, Math.PI * 2);
+            ctx.lineTo(width, height - radius);
+            ctx.closePath();
+            ctx.shadowBlur = 20;
+            ctx.shadowColor = fillColor || "#000";
+            ctx.fillStyle = fillColor || "#000";
+            ctx.fill();
+            ctx.restore();
+        }
+        `;
+        let contentArray = content.split("\n");
+        let lineHeight = 25;
+        let fontWidth = 10;
+        let rectHeight = contentArray.length * lineHeight + 20;
+        let rectWidth = 0;
+        for (let index = 0; index < contentArray.length; index++) {
+            if (contentArray[index].split("").length * fontWidth > rectWidth) {
+                rectWidth = contentArray[index].split("").length * fontWidth
+            }
+        }
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        /* 绘制背景色 */
+        function background(ctx, x, y, width, height, fillColor) {
+            ctx.fillStyle=fillColor || "#fff";
+            ctx.fillRect(x,y,width,height);  
+        }
+        /* 绘制圆角矩形 */
+        function roundRect(ctx, x, y, width, height, radius, fillColor) {        
+            if (2 * radius > width || 2 * radius > height) { return width = height = 2 * radius; }
+            ctx.save();
+            ctx.translate(x, y);
+            ctx.beginPath(0);
+            ctx.arc(width - radius, height - radius, radius, 0, Math.PI / 2); 
+            ctx.lineTo(radius, height);
+            ctx.arc(radius, height - radius, radius, Math.PI / 2, Math.PI);
+            ctx.lineTo(0, radius);
+            ctx.arc(radius, radius, radius, Math.PI, Math.PI * 3 / 2);
+            ctx.lineTo(width - radius, 0);
+            ctx.arc(width - radius, radius, radius, Math.PI * 3 / 2, Math.PI * 2);
+            ctx.lineTo(width, height - radius);
+            ctx.closePath();
+            ctx.shadowBlur = 20;
+            ctx.shadowColor = fillColor || "#000";
+            ctx.fillStyle = fillColor || "#000";
+            ctx.fill();
+            ctx.restore();
+        }
+        /* 绘制左上角三个小按钮 */
+        function circle(ctx, x, y, radius, fillColor) {
+            ctx.beginPath();
+            ctx.arc(x, y, radius, 0, Math.PI * 2);
+            ctx.closePath();
+            ctx.fillStyle = fillColor || "#fff";
+            ctx.fill();
+        }
+        /* 绘制文本 */
+        function text(ctx, x, y, lineHeight, contentArray, fillColor) {
+            ctx.font = "20px bold 微软雅黑";
+            ctx.fillStyle = fillColor || "#fff";
+            ctx.textAlign = "left";
+            ctx.textBaseline = "middle";
+            for (let index = 0; index < contentArray.length; index++) {
+                if(contentArray[index].trim() === ""){
+                    contentArray.splice(index,1)
+                    index --;
+                }else{
+                    ctx.fillText(contentArray[index], x, y + index * lineHeight);
+                }  
+            }
+        }
+        background(ctx,0,0,width,height,"#d2d2d2")
+        roundRect(ctx, width/2-rectWidth/2, height/2-rectHeight/2, rectWidth, rectHeight, 8, 'rgb(50,50,50)');
+        circle(ctx, width/2-rectWidth/2+20, height/2-rectHeight/2+20, 8, 'rgb(197,79,103)');
+        circle(ctx, width/2-rectWidth/2+45, height/2-rectHeight/2+20, 8, 'rgb(210,191,77)');
+        circle(ctx, width/2-rectWidth/2+70, height/2-rectHeight/2+20, 8, 'rgb(103,212,98)');
+        text(ctx, width/2-rectWidth/2+20, height/2-rectHeight/2+60, lineHeight, contentArray, 'rgb(97,175,239)');
+    </script>
+</body>
+</html>
